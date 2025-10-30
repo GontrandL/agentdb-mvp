@@ -363,6 +363,7 @@ def _ingest_file_content(
     content: str,
     *,
     write_to_disk: bool = True,
+    llm_analyzer=None,
 ) -> Dict[str, Any]:
     file_hash = sha256_bytes(content.encode("utf-8"))
     row = conn.execute("SELECT db_state FROM files WHERE repo_path=?", (safe_path,)).fetchone()
@@ -374,21 +375,42 @@ def _ingest_file_content(
             "hint": "Use agentdb patch instead",
         })
 
-    code, agtag_block = split_agtag(content)
-    if not agtag_block:
-        raise IngestError({
-            "error": "agtag_missing",
-            "hint": "Append an AGTAG block at EOF",
-        })
+    # Choose analysis method: LLM or AGTAG
+    if llm_analyzer:
+        # NEW: LLM-based analysis (no AGTAG needed)
+        try:
+            symbols = llm_analyzer.analyze_file(safe_path, content)
+            # Convert LLM output to AGTAG format for upsert_symbols
+            agtag = {
+                "version": "v1",
+                "symbols": symbols,
+                "docs": [],
+                "tests": []
+            }
+            code = content  # Full content is code (no AGTAG block)
+        except Exception as exc:
+            raise IngestError({
+                "error": "llm_analysis_failed",
+                "hint": str(exc),
+                "path": safe_path,
+            }) from exc
+    else:
+        # LEGACY: AGTAG extraction
+        code, agtag_block = split_agtag(content)
+        if not agtag_block:
+            raise IngestError({
+                "error": "agtag_missing",
+                "hint": "Append an AGTAG block at EOF or use --llm-analyze",
+            })
 
-    try:
-        agtag = parse_agtag_block(agtag_block, safe_path)
-    except (ValidationError, ValueError) as exc:
-        raise IngestError({
-            "error": "agtag_invalid",
-            "hint": str(exc),
-            "path": safe_path,
-        }) from exc
+        try:
+            agtag = parse_agtag_block(agtag_block, safe_path)
+        except (ValidationError, ValueError) as exc:
+            raise IngestError({
+                "error": "agtag_invalid",
+                "hint": str(exc),
+                "path": safe_path,
+            }) from exc
 
     if write_to_disk:
         os.makedirs(os.path.dirname(safe_path) or ".", exist_ok=True)
@@ -803,7 +825,11 @@ def search(query, fields, limit, kind):
 @click.option("--pattern", multiple=True, default=("*.md",), show_default=True, help="Glob patterns to include when using --directory")
 @click.option("--exclude", multiple=True, default=("node_modules/*",), show_default=True, help="Glob patterns to exclude when using --directory")
 @click.option("--auto-tag", is_flag=True, help="Auto-generate AGTAG for markdown files")
-def ingest(path, directory, pattern, exclude, auto_tag):
+@click.option("--llm-analyze", is_flag=True, help="Use LLM to generate metadata (no AGTAG needed - RECOMMENDED for Python files)")
+@click.option("--llm-provider", default="anthropic", help="LLM provider (anthropic, openai, openrouter)")
+@click.option("--llm-model", help="LLM model (defaults to cost-effective option)")
+@click.option("--llm-api-key", envvar="ANTHROPIC_API_KEY", help="LLM API key")
+def ingest(path, directory, pattern, exclude, auto_tag, llm_analyze, llm_provider, llm_model, llm_api_key):
     """Ingest files into AgentDB (single file or bulk directory mode)."""
     if bool(path) == bool(directory):
         click.echo(json.dumps({
@@ -813,6 +839,31 @@ def ingest(path, directory, pattern, exclude, auto_tag):
         sys.exit(2)
 
     conn = ensure_db()
+
+    # Initialize LLM analyzer if requested
+    analyzer = None
+    if llm_analyze:
+        try:
+            from agentdb.llm_analyzer import LLMAnalyzer
+            analyzer = LLMAnalyzer(
+                provider=llm_provider,
+                model=llm_model,
+                api_key=llm_api_key
+            )
+            click.echo(f"✅ LLM analyzer initialized ({llm_provider}, {analyzer.model})", err=True)
+        except ImportError as exc:
+            click.echo(json.dumps({
+                "error": "llm_analyzer_unavailable",
+                "hint": f"Install dependencies: {exc}"
+            }))
+            sys.exit(2)
+        except Exception as exc:
+            click.echo(json.dumps({
+                "error": "llm_analyzer_init_failed",
+                "hint": str(exc)
+            }))
+            sys.exit(2)
+
     try:
         if directory:
             dir_path = Path(directory)
@@ -839,6 +890,7 @@ def ingest(path, directory, pattern, exclude, auto_tag):
                             safe_path,
                             content,
                             write_to_disk=auto_tag,
+                            llm_analyzer=analyzer,
                         )
                         successes.append(result)
                     except IngestError as exc:
@@ -865,7 +917,7 @@ def ingest(path, directory, pattern, exclude, auto_tag):
         content = sys.stdin.read()
         content = _maybe_auto_tag(content, safe_path, auto_tag)
         try:
-            result = _ingest_file_content(conn, safe_path, content)
+            result = _ingest_file_content(conn, safe_path, content, llm_analyzer=analyzer)
         except IngestError as exc:
             click.echo(json.dumps(exc.payload))
             sys.exit(2)
