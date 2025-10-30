@@ -1,0 +1,38 @@
+.agentdb/
+__pycache__/
+*.pyc
+*.sqlite
+venv/
+.venv/
+.eggs/
+dist/
+.build/
+.pytest_cache/
+
+# Contract artifacts (generated)
+CLAUDE.min.md
+.contract_metadata.json
+
+# Keep .contract_hash tracked (required for CI)
+
+# Logs and temporary files
+*.log
+/tmp/
+*.tmp
+
+# Backups
+*.backup
+*.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dashboard (if applicable - has its own git repo)
+dashboard/

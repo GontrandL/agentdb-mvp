@@ -1,0 +1,2 @@
+[console_scripts]
+agentdb = agentdb.core:cli_entry

@@ -1,0 +1,179 @@
+{
+  "validation_date": "2025-10-30",
+  "model": "claude-3-5-haiku-20241022 (MOCK)",
+  "test_cases": 10,
+  "pass_rate": 0.6,
+  "avg_similarity": 0.9280000000000002,
+  "avg_token_savings": 0.8515485224143269,
+  "overall_verdict": "NEEDS IMPROVEMENT",
+  "mock_mode": true,
+  "results_by_type": {
+    "factual": {
+      "avg_similarity": 0.975,
+      "avg_token_savings": 0.8544084747727132,
+      "pass_rate": 1.0
+    },
+    "reasoning": {
+      "avg_similarity": 0.905,
+      "avg_token_savings": 0.8361688311688311,
+      "pass_rate": 0.5
+    },
+    "code": {
+      "avg_similarity": 0.83,
+      "avg_token_savings": 0.8287037037037037,
+      "pass_rate": 0.0
+    },
+    "decision": {
+      "avg_similarity": 0.9349999999999999,
+      "avg_token_savings": 0.8657126718132179,
+      "pass_rate": 0.5
+    },
+    "multi_step": {
+      "avg_similarity": 0.87,
+      "avg_token_savings": 0.8653846153846154,
+      "pass_rate": 0.0
+    }
+  },
+  "test_details": [
+    {
+      "test_case_id": 1,
+      "query": "What are the main components of the AgentDB MVP system?",
+      "query_type": "factual",
+      "output_full": "[Simulated full context response for: What are the main components of the AgentDB MVP sy...]",
+      "output_compressed": "[Simulated compressed context response for: What are the main components of the AgentDB MVP sy...]",
+      "similarity_score": 0.98,
+      "token_savings_pct": 83.84615384615385,
+      "tokens_full": 130,
+      "tokens_compressed": 21,
+      "threshold": 0.98,
+      "verdict": "PASS",
+      "execution_time_ms": 0.0324249267578125
+    },
+    {
+      "test_case_id": 2,
+      "query": "Should I use L0/L1 or L4 for code generation tasks? Explain your reasoning.",
+      "query_type": "reasoning",
+      "output_full": "[Simulated full context response for: Should I use L0/L1 or L4 for code generation tasks...]",
+      "output_compressed": "[Simulated compressed context response for: Should I use L0/L1 or L4 for code generation tasks...]",
+      "similarity_score": 0.91,
+      "token_savings_pct": 82.14285714285714,
+      "tokens_full": 196,
+      "tokens_compressed": 35,
+      "threshold": 0.92,
+      "verdict": "FAIL",
+      "execution_time_ms": 0.015497207641601562
+    },
+    {
+      "test_case_id": 3,
+      "query": "Write Python code to implement a symbol search function using FTS5.",
+      "query_type": "code",
+      "output_full": "[Simulated full context response for: Write Python code to implement a symbol search fun...]",
+      "output_compressed": "[Simulated compressed context response for: Write Python code to implement a symbol search fun...]",
+      "similarity_score": 0.83,
+      "token_savings_pct": 82.87037037037037,
+      "tokens_full": 216,
+      "tokens_compressed": 37,
+      "threshold": 0.85,
+      "verdict": "FAIL",
+      "execution_time_ms": 0.015974044799804688
+    },
+    {
+      "test_case_id": 4,
+      "query": "I need to add a new symbol to the database. Should I use 'ingest' or 'patch' command?",
+      "query_type": "decision",
+      "output_full": "[Simulated full context response for: I need to add a new symbol to the database. Should...]",
+      "output_compressed": "[Simulated compressed context response for: I need to add a new symbol to the database. Should...]",
+      "similarity_score": 0.95,
+      "token_savings_pct": 87.61061946902655,
+      "tokens_full": 226,
+      "tokens_compressed": 28,
+      "threshold": 0.95,
+      "verdict": "PASS",
+      "execution_time_ms": 0.01430511474609375
+    },
+    {
+      "test_case_id": 5,
+      "query": "Create an implementation plan for adding TypeScript auto-tagging support.",
+      "query_type": "multi_step",
+      "output_full": "[Simulated full context response for: Create an implementation plan for adding TypeScrip...]",
+      "output_compressed": "[Simulated compressed context response for: Create an implementation plan for adding TypeScrip...]",
+      "similarity_score": 0.87,
+      "token_savings_pct": 86.53846153846155,
+      "tokens_full": 260,
+      "tokens_compressed": 35,
+      "threshold": 0.9,
+      "verdict": "FAIL",
+      "execution_time_ms": 0.013828277587890625
+    },
+    {
+      "test_case_id": 6,
+      "query": "What happens if I try to ingest a file that's already indexed?",
+      "query_type": "factual",
+      "output_full": "[Simulated full context response for: What happens if I try to ingest a file that's alre...]",
+      "output_compressed": "[Simulated compressed context response for: What happens if I try to ingest a file that's alre...]",
+      "similarity_score": 0.97,
+      "token_savings_pct": 86.77248677248677,
+      "tokens_full": 189,
+      "tokens_compressed": 25,
+      "threshold": 0.95,
+      "verdict": "PASS",
+      "execution_time_ms": 0.010251998901367188
+    },
+    {
+      "test_case_id": 7,
+      "query": "How do I update a symbol?",
+      "query_type": "decision",
+      "output_full": "[Simulated full context response for: How do I update a symbol?...]",
+      "output_compressed": "[Simulated compressed context response for: How do I update a symbol?...]",
+      "similarity_score": 0.9199999999999999,
+      "token_savings_pct": 85.53191489361703,
+      "tokens_full": 235,
+      "tokens_compressed": 34,
+      "threshold": 0.92,
+      "verdict": "FAIL",
+      "execution_time_ms": 0.014066696166992188
+    },
+    {
+      "test_case_id": 8,
+      "query": "How does the FTS5 search interact with the progressive disclosure system?",
+      "query_type": "reasoning",
+      "output_full": "[Simulated full context response for: How does the FTS5 search interact with the progres...]",
+      "output_compressed": "[Simulated compressed context response for: How does the FTS5 search interact with the progres...]",
+      "similarity_score": 0.9,
+      "token_savings_pct": 85.0909090909091,
+      "tokens_full": 275,
+      "tokens_compressed": 41,
+      "threshold": 0.9,
+      "verdict": "PASS",
+      "execution_time_ms": 0.018358230590820312
+    },
+    {
+      "test_case_id": 9,
+      "query": "What problem led to the creation of the AGTAG system?",
+      "query_type": "factual",
+      "output_full": "[Simulated full context response for: What problem led to the creation of the AGTAG syst...]",
+      "output_compressed": "[Simulated compressed context response for: What problem led to the creation of the AGTAG syst...]",
+      "similarity_score": 0.97,
+      "token_savings_pct": 85.43046357615894,
+      "tokens_full": 302,
+      "tokens_compressed": 44,
+      "threshold": 0.95,
+      "verdict": "PASS",
+      "execution_time_ms": 0.021219253540039062
+    },
+    {
+      "test_case_id": 10,
+      "query": "What are the next planned features after quality validation?",
+      "query_type": "factual",
+      "output_full": "[Simulated full context response for: What are the next planned features after quality v...]",
+      "output_compressed": "[Simulated compressed context response for: What are the next planned features after quality v...]",
+      "similarity_score": 0.98,
+      "token_savings_pct": 85.71428571428571,
+      "tokens_full": 266,
+      "tokens_compressed": 38,
+      "threshold": 0.95,
+      "verdict": "PASS",
+      "execution_time_ms": 0.015735626220703125
+    }
+  ]
+}

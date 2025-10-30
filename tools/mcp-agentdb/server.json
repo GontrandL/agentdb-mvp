@@ -1,0 +1,116 @@
+{
+  "name": "agentdb",
+  "version": "0.1.0",
+  "transport": {
+    "type": "stdio"
+  },
+  "tools": [
+    {
+      "name": "ingest_file",
+      "description": "Persist a full file with AGTAG v1 when DB state is 'missing'.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "focus",
+      "description": "Return L0/L1 + neighbors for a handle.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string"
+          },
+          "depth": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        "required": [
+          "handle"
+        ]
+      }
+    },
+    {
+      "name": "zoom",
+      "description": "Return zoom data (0-4).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          }
+        },
+        "required": [
+          "handle",
+          "level"
+        ]
+      }
+    },
+    {
+      "name": "patch",
+      "description": "Apply a unified diff (with AGTAG_PATCH_FINAL_FILE JSON envelope) to an indexed file.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "hash_before": {
+            "type": "string"
+          },
+          "unified_diff": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "hash_before",
+          "unified_diff"
+        ]
+      }
+    },
+    {
+      "name": "get_contract",
+      "description": "Fetch the repository's behavioral contract anchor (CLAUDE.md) for agent injection. Enables dynamic contract discovery without hardcoded prompts. Returns contract text or JSON envelope with system message.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["full", "compressed"],
+            "description": "Contract mode: 'full' (480 lines, comprehensive) or 'compressed' (180 lines, core rules only)",
+            "default": "compressed"
+          },
+          "output_format": {
+            "type": "string",
+            "enum": ["text", "json", "mcp"],
+            "description": "Output format: 'text' (markdown), 'json' (MCP envelope with system_message), or 'mcp' (alias for json)",
+            "default": "json"
+          }
+        }
+      }
+    }
+  ]
+}

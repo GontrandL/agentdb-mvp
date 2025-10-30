@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: agentdb
+Version: 0.1.0
+Summary: Per-project DB + scripts for coding agents (MVP)
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: click>=8.1
+Requires-Dist: jsonschema>=4.22
+Requires-Dist: python-dateutil>=2.9
+
+# agentdb-mvp
+
+A minimal per-project DB + scripts scaffold for coding agents. Stores symbol metadata in `./.agentdb/` (SQLite + FTS5), exposes CLI parity with future MCP stdio server.
+
+## Quickstart
+
+```bash
+# 1) Create and activate venv (Python 3.10+)
+python -m venv .venv && source .venv/bin/activate
+
+# 2) Install
+pip install -e .
+
+# 3) Initialize DB (creates ./.agentdb/agent.sqlite)
+agentdb init
+
+# 4) Ingest a new (missing) file from stdin (full file with AGTAG block at bottom)
+agentdb ingest --path src/example.py < examples/example.py
+
+# 5) Focus/zoom
+agentdb focus --handle "ctx://src/example.py::example@sha256:ANY" --depth 1
+agentdb zoom --handle "ctx://src/example.py::example@sha256:ANY" --level 1
+
+# 6) Apply a patch (unified diff from stdin)
+agentdb patch --path src/example.py --hash-before CURRENT_HASH < examples/example.diff
+```
+
+## Contract highlights (LLM-facing)
+
+- **Full file only when `db_state=missing`** (listed by `agentdb inventory`). Otherwise **unified diff**.
+- Always include an **AGTAG** block at EOF when creating/touching symbols/tests/docs.
+- Ask for context via **FOCUS/ZOOM**—do not guess.
+- English only inside blocks; no prose outside blocks.
+
+See `src/agentdb/agtag.py` for the AGTAG v1 schema.

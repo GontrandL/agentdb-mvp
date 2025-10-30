@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentdb"
+version = "0.1.0"
+description = "Per-project DB + scripts for coding agents (MVP)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "click>=8.1",
+  "jsonschema>=4.22",
+  "python-dateutil>=2.9",
+  # Optional: tree-sitter for AST confirmation (enable later)
+  # "tree_sitter>=0.21",
+]
+
+[project.scripts]
+agentdb = "agentdb.core:cli_entry"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["src"]

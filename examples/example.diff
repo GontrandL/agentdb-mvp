@@ -1,0 +1,10 @@
+--- a/src/example.py
++++ b/src/example.py
+@@ -1,2 +1,2 @@
+-def example(a,b):
+-    return a+b
++def example(a,b):  # improved
++    return (a + b)
+@@ AGTAG_PATCH_FINAL_FILE
+{"final_file": "def example(a,b):\n    return (a + b)\n\n<!--AGTAG v1 START-->\n{\"version\":\"v1\",\"symbols\":[{\"path\":\"src/example.py\",\"name\":\"example\",\"kind\":\"function\",\"lines\":[1,2],\"summary_l0\":\"adds two numbers\",\"contract_l1\":\"@io a:int,b:int -> int\"}]}\n<!--AGTAG v1 END-->\n"}
+END
